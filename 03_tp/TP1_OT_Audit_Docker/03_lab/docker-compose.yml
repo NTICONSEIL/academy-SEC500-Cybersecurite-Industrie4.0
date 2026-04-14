@@ -1,0 +1,69 @@
+services:
+  analyst:
+    build: ./analyst
+    container_name: sec500-analyst
+    tty: true
+    stdin_open: true
+    networks:
+      ot_lab:
+        ipv4_address: 192.168.10.50
+
+  plc1:
+    build: ./plc
+    container_name: sec500-plc1
+    environment:
+      MODBUS_PORT: "502"
+      REG1: "500"
+    networks:
+      ot_lab:
+        ipv4_address: 192.168.10.110
+
+  plc2:
+    build: ./plc
+    container_name: sec500-plc2
+    environment:
+      MODBUS_PORT: "502"
+      REG1: "650"
+    networks:
+      ot_lab:
+        ipv4_address: 192.168.10.111
+
+  hmi:
+    build: ./hmi
+    container_name: sec500-hmi
+    networks:
+      ot_lab:
+        ipv4_address: 192.168.10.120
+
+  legacy:
+    build: ./file_server
+    container_name: sec500-legacy
+    networks:
+      ot_lab:
+        ipv4_address: 192.168.10.130
+
+  mqtt:
+    image: eclipse-mosquitto:2
+    container_name: sec500-mqtt
+    ports: []
+    volumes:
+      - ./mqtt_publisher/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    networks:
+      ot_lab:
+        ipv4_address: 192.168.10.200
+
+  publisher:
+    build: ./mqtt_publisher
+    container_name: sec500-publisher
+    depends_on:
+      - mqtt
+    networks:
+      ot_lab:
+        ipv4_address: 192.168.10.201
+
+networks:
+  ot_lab:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24

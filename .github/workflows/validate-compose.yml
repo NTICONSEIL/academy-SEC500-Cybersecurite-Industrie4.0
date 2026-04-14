@@ -1,0 +1,17 @@
+name: Validate Docker Compose
+on:
+  push:
+    paths:
+      - '03_tp/TP1_OT_Audit_Docker/03_lab/**'
+  pull_request:
+    paths:
+      - '03_tp/TP1_OT_Audit_Docker/03_lab/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check compose config
+        working-directory: 03_tp/TP1_OT_Audit_Docker/03_lab
+        run: docker compose config
