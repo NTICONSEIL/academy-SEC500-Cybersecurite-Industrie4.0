@@ -1,0 +1,10 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: tp_mqtt_broker
+    ports:
+      - "1883:1883"
+      - "8883:8883"
+    volumes:
+      - ./mosquitto/mosquitto_tls.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/certs:/mosquitto/config/certs
